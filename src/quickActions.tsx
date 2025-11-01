@@ -201,7 +201,11 @@ function QuickActionsCommand() {
         icon={isPlaying ? Icon.Pause : Icon.Play}
         actions={
           <ActionPanel>
-            <Action title={isPlaying ? "Pause" : "Play"} onAction={handlePlayPause} />
+            <Action
+              title={isPlaying ? "Pause" : "Play"}
+              onAction={handlePlayPause}
+              shortcut={{ modifiers: [], key: "enter" }}
+            />
           </ActionPanel>
         }
       />
@@ -212,7 +216,7 @@ function QuickActionsCommand() {
         icon={Icon.Heart}
         actions={
           <ActionPanel>
-            <Action title="Like Current Track" onAction={handleLike} />
+            <Action title="Like Current Track" onAction={handleLike} shortcut={{ modifiers: ["ctrl"], key: "l" }} />
           </ActionPanel>
         }
       />
@@ -223,7 +227,11 @@ function QuickActionsCommand() {
         icon={Icon.HeartDisabled}
         actions={
           <ActionPanel>
-            <Action title="Dislike Current Track" onAction={handleDislike} />
+            <Action
+              title="Dislike Current Track"
+              onAction={handleDislike}
+              shortcut={{ modifiers: ["ctrl", "shift"], key: "l" }}
+            />
           </ActionPanel>
         }
       />
@@ -271,7 +279,11 @@ function QuickActionsCommand() {
         icon={Icon.Shuffle}
         actions={
           <ActionPanel>
-            <Action title="Toggle Shuffle" onAction={handleToggleShuffle} />
+            <Action
+              title="Toggle Shuffle"
+              onAction={handleToggleShuffle}
+              shortcut={{ modifiers: ["ctrl"], key: "s" }}
+            />
           </ActionPanel>
         }
       />
@@ -288,7 +300,7 @@ function QuickActionsCommand() {
         icon={Icon.Repeat}
         actions={
           <ActionPanel>
-            <Action title="Toggle Repeat" onAction={handleToggleRepeat} />
+            <Action title="Toggle Repeat" onAction={handleToggleRepeat} shortcut={{ modifiers: ["ctrl"], key: "r" }} />
           </ActionPanel>
         }
       />
@@ -299,7 +311,11 @@ function QuickActionsCommand() {
         icon={Icon.Music}
         actions={
           <ActionPanel>
-            <Action title="Start Radio" onAction={handleStartRadio} />
+            <Action
+              title="Start Radio"
+              onAction={handleStartRadio}
+              shortcut={{ modifiers: ["ctrl", "shift"], key: "r" }}
+            />
           </ActionPanel>
         }
       />
@@ -310,7 +326,11 @@ function QuickActionsCommand() {
         icon={Icon.SpeakerOff}
         actions={
           <ActionPanel>
-            <Action title="Mute Volume" onAction={() => handleVolumeChange(0)} />
+            <Action
+              title="Mute Volume"
+              onAction={() => handleVolumeChange(0)}
+              shortcut={{ modifiers: ["ctrl"], key: "m" }}
+            />
           </ActionPanel>
         }
       />
@@ -321,7 +341,11 @@ function QuickActionsCommand() {
         icon={Icon.SpeakerDown}
         actions={
           <ActionPanel>
-            <Action title="Set Volume to 33%" onAction={() => handleVolumeChange(33)} />
+            <Action
+              title="Set Volume to 33%"
+              onAction={() => handleVolumeChange(33)}
+              shortcut={{ modifiers: ["ctrl"], key: "1" }}
+            />
           </ActionPanel>
         }
       />
@@ -332,7 +356,11 @@ function QuickActionsCommand() {
         icon={Icon.Speaker}
         actions={
           <ActionPanel>
-            <Action title="Set Volume to 66%" onAction={() => handleVolumeChange(66)} />
+            <Action
+              title="Set Volume to 66%"
+              onAction={() => handleVolumeChange(66)}
+              shortcut={{ modifiers: ["ctrl"], key: "2" }}
+            />
           </ActionPanel>
         }
       />
@@ -343,7 +371,11 @@ function QuickActionsCommand() {
         icon={Icon.SpeakerOn}
         actions={
           <ActionPanel>
-            <Action title="Set Volume to 100%" onAction={() => handleVolumeChange(100)} />
+            <Action
+              title="Set Volume to 100%"
+              onAction={() => handleVolumeChange(100)}
+              shortcut={{ modifiers: ["ctrl"], key: "3" }}
+            />
           </ActionPanel>
         }
       />
