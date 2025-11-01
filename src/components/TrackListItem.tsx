@@ -19,7 +19,7 @@ export default function TrackListItem({ track, album }: TrackListItemProps) {
   const handlePlay = async () => {
     try {
       if (track.uri) {
-        await play({ contextUri: track.uri });
+        await play({ uris: [track.uri] });
         await showHUD("▶️ Playing");
       }
     } catch (error) {

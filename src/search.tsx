@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { List, Icon } from "@raycast/api";
+import { List, Icon, ActionPanel, Action, showHUD } from "@raycast/api";
 import { View } from "./components/View";
 import { useSearch } from "./hooks/useSearch";
 import TrackListItem from "./components/TrackListItem";
+import { play } from "./api/play";
 
 type FilterValue = "all" | "artists" | "tracks" | "albums" | "playlists";
 
@@ -68,12 +69,21 @@ function SearchCommand() {
                         subtitle={`${artist.followers?.total?.toLocaleString() || 0} followers`}
                         icon={{ source: artist.images?.[0]?.url || Icon.Person }}
                         accessories={[{ text: `${artist.popularity}%`, tooltip: "Popularity" }]}
+                        actions={
+                          <ActionPanel>
+                            {artist.external_urls?.spotify && (
+                              <Action.OpenInBrowser title="Open in Spotify" url={artist.external_urls.spotify} />
+                            )}
+                            {artist.external_urls?.spotify && (
+                              <Action.CopyToClipboard title="Copy Spotify URL" content={artist.external_urls.spotify} />
+                            )}
+                          </ActionPanel>
+                        }
                       />
                     );
                   })}
               </List.Section>
             )}
-
           {/* Tracks Section */}
           {(showAll || searchFilter === "tracks") &&
             searchData?.tracks?.items &&
@@ -91,7 +101,6 @@ function SearchCommand() {
                   })}
               </List.Section>
             )}
-
           {/* Albums Section */}
           {(showAll || searchFilter === "albums") &&
             searchData?.albums?.items &&
@@ -115,12 +124,33 @@ function SearchCommand() {
                           { text: album.release_date || "" },
                           { text: `${album.total_tracks} tracks`, tooltip: "Total Tracks" },
                         ]}
+                        actions={
+                          <ActionPanel>
+                            <Action
+                              title="Play Album"
+                              icon={Icon.Play}
+                              onAction={async () => {
+                                try {
+                                  await play({ contextUri: album.uri });
+                                  await showHUD("▶️ Playing Album");
+                                } catch (error) {
+                                  await showHUD("❌ Could not play album");
+                                }
+                              }}
+                            />
+                            {album.external_urls?.spotify && (
+                              <Action.OpenInBrowser title="Open in Spotify" url={album.external_urls.spotify} />
+                            )}
+                            {album.external_urls?.spotify && (
+                              <Action.CopyToClipboard title="Copy Spotify URL" content={album.external_urls.spotify} />
+                            )}
+                          </ActionPanel>
+                        }
                       />
                     );
                   })}
               </List.Section>
             )}
-
           {/* Playlists Section */}
           {(showAll || searchFilter === "playlists") &&
             searchData?.playlists?.items &&
@@ -141,12 +171,36 @@ function SearchCommand() {
                         subtitle={`by ${playlist.owner?.display_name || "Unknown"}`}
                         icon={{ source: playlist.images?.[0]?.url || Icon.List }}
                         accessories={[{ text: `${playlist.tracks?.total || 0} tracks`, tooltip: "Total Tracks" }]}
+                        actions={
+                          <ActionPanel>
+                            <Action
+                              title="Play Playlist"
+                              icon={Icon.Play}
+                              onAction={async () => {
+                                try {
+                                  await play({ contextUri: playlist.uri });
+                                  await showHUD("▶️ Playing Playlist");
+                                } catch (error) {
+                                  await showHUD("❌ Could not play playlist");
+                                }
+                              }}
+                            />
+                            {playlist.external_urls?.spotify && (
+                              <Action.OpenInBrowser title="Open in Spotify" url={playlist.external_urls.spotify} />
+                            )}
+                            {playlist.external_urls?.spotify && (
+                              <Action.CopyToClipboard
+                                title="Copy Spotify URL"
+                                content={playlist.external_urls.spotify}
+                              />
+                            )}
+                          </ActionPanel>
+                        }
                       />
                     );
                   })}
               </List.Section>
             )}
-
           {searchText &&
             !searchIsLoading &&
             !searchData?.tracks?.items?.length &&
