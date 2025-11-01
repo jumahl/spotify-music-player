@@ -4,7 +4,7 @@ import { getSpotifyClient } from "../helpers/withSpotifyClient";
 type SearchProps = {
   query: string;
   limit?: number;
-  types?: ("album" | "artist" | "playlist" | "track" | "show" | "episode")[];
+  types?: ("album" | "artist" | "playlist" | "track")[];
 };
 
 function filterNullItems<T>(category: { items?: (T | null)[] } | undefined) {
