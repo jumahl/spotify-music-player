@@ -140,22 +140,6 @@ spotify-music-player/
 └── package.json
 ```
 
-### Available Scripts
-
-```bash
-# Development mode (hot reload)
-npm run dev
-
-# Build
-npm run build
-
-# Lint
-npm run lint
-
-# Fix lint
-npm run fix-lint
-```
-
 ## 🔧 Technical Architecture
 
 This extension uses the **Spotify Web API** instead of AppleScript (which only works on Mac). This means:
