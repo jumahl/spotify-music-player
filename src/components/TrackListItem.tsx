@@ -1,7 +1,6 @@
-import { List, ActionPanel, Action, Icon, showHUD } from "@raycast/api";
+import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import { TrackObject, AlbumObject } from "../helpers/spotify.api";
 import { play } from "../api/play";
-import { getUserFriendlyErrorMessage } from "../helpers/getError";
 
 type TrackListItemProps = {
   track: TrackObject;
@@ -20,12 +19,9 @@ export default function TrackListItem({ track, album }: TrackListItemProps) {
     try {
       if (track.uri) {
         await play({ contextUri: track.uri });
-        await showHUD("▶️ Playing");
       }
     } catch (error) {
       console.error("Failed to play track", error);
-      const message = getUserFriendlyErrorMessage(error);
-      await showHUD(`❌ ${message}`);
     }
   };
 
