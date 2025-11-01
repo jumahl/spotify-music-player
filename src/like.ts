@@ -4,6 +4,7 @@ import { getCurrentlyPlaying } from "./api/getCurrentlyPlaying";
 import { addToMySavedTracks } from "./api/addToMySavedTracks";
 import { TrackObject } from "./helpers/spotify.api";
 import { getUserFriendlyErrorMessage } from "./helpers/getError";
+import { getSpotifyClient } from "./helpers/withSpotifyClient";
 
 export default async function Command() {
   await setSpotifyClient();
@@ -26,6 +27,14 @@ export default async function Command() {
 
     if (!trackId) {
       return await showHUD("❌ Could not get track ID");
+    }
+
+    // Check if track is already liked
+    const { spotifyClient } = getSpotifyClient();
+    const isSaved = await spotifyClient.getMeTracksContains(trackId);
+
+    if (isSaved?.[0]) {
+      return await showHUD("ℹ️ Track is already in your Liked Songs");
     }
 
     await addToMySavedTracks({ trackIds: [trackId] });

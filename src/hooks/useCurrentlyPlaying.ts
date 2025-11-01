@@ -1,5 +1,5 @@
 import { useCachedPromise } from "@raycast/utils";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { getCurrentlyPlaying } from "../api/getCurrentlyPlaying";
 
 export function useCurrentlyPlaying() {
@@ -7,13 +7,15 @@ export function useCurrentlyPlaying() {
     keepPreviousData: true,
   });
 
+  const revalidateCallback = useCallback(() => {
+    revalidate();
+  }, [revalidate]);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      revalidate();
-    }, 5000);
+    const interval = setInterval(revalidateCallback, 5000);
 
     return () => clearInterval(interval);
-  }, [revalidate]);
+  }, [revalidateCallback]);
 
   return {
     currentlyPlayingData: data,
