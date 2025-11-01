@@ -27,6 +27,7 @@ export default function TrackListItem({ track, album }: TrackListItemProps) {
       const message = getUserFriendlyErrorMessage(error);
       await showHUD(`❌ ${message}`);
     }
+    return false; // Prevents Raycast from closing
   };
 
   return (

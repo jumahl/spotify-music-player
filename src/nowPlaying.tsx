@@ -101,6 +101,7 @@ function NowPlayingCommand() {
               onAction={async () => {
                 await pause();
                 await playbackStateRevalidate();
+                return false; // Prevents Raycast from closing
               }}
             />
           ) : (
@@ -111,6 +112,7 @@ function NowPlayingCommand() {
               onAction={async () => {
                 await play();
                 await playbackStateRevalidate();
+                return false; // Prevents Raycast from closing
               }}
             />
           )}
@@ -121,6 +123,7 @@ function NowPlayingCommand() {
             onAction={async () => {
               await skipToNext();
               await currentlyPlayingRevalidate();
+              return false; // Prevents Raycast from closing
             }}
           />
           <Action
@@ -130,6 +133,7 @@ function NowPlayingCommand() {
             onAction={async () => {
               await skipToPrevious();
               await currentlyPlayingRevalidate();
+              return false; // Prevents Raycast from closing
             }}
           />
           <Action
@@ -139,6 +143,7 @@ function NowPlayingCommand() {
             onAction={async () => {
               await currentlyPlayingRevalidate();
               await playbackStateRevalidate();
+              return false; // Prevents Raycast from closing
             }}
           />
           <Action
@@ -147,6 +152,7 @@ function NowPlayingCommand() {
             onAction={async () => {
               await toggleShuffle(!shuffleState);
               await playbackStateRevalidate();
+              return false; // Prevents Raycast from closing
             }}
           />
           <Action
@@ -158,6 +164,7 @@ function NowPlayingCommand() {
               const newState = repeatState === "off" ? "context" : repeatState === "context" ? "track" : "off";
               await toggleRepeat(newState);
               await playbackStateRevalidate();
+              return false; // Prevents Raycast from closing
             }}
           />
           {trackUri && (
@@ -167,6 +174,7 @@ function NowPlayingCommand() {
               onAction={async () => {
                 await startRadio(trackUri);
                 await currentlyPlayingRevalidate();
+                return false; // Prevents Raycast from closing
               }}
             />
           )}

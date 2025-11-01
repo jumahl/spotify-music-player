@@ -1,4 +1,4 @@
-import { ActionPanel, List, Action, Icon, showHUD, getPreferenceValues, Clipboard } from "@raycast/api";
+import { ActionPanel, List, Action, Icon, showToast, Toast, getPreferenceValues, Clipboard } from "@raycast/api";
 import { View } from "./components/View";
 import { usePlaybackState } from "./hooks/usePlaybackState";
 import { useCurrentlyPlaying } from "./hooks/useCurrentlyPlaying";
@@ -37,49 +37,53 @@ function QuickActionsCommand() {
     try {
       if (isPlaying) {
         await pause();
-        await showHUD("⏸ Paused");
+        await showToast({ style: Toast.Style.Success, title: "⏸ Paused" });
       } else {
         await play();
-        await showHUD("▶️ Playing");
+        await showToast({ style: Toast.Style.Success, title: "▶️ Playing" });
       }
       await playbackStateRevalidate();
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleNext = async () => {
     try {
       await skipToNext();
       await currentlyPlayingRevalidate();
-      await showHUD("⏭ Next track");
+      await showToast({ style: Toast.Style.Success, title: "⏭ Next track" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handlePrevious = async () => {
     try {
       await skipToPrevious();
       await currentlyPlayingRevalidate();
-      await showHUD("⏮ Previous track");
+      await showToast({ style: Toast.Style.Success, title: "⏮ Previous track" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleVolumeChange = async (newVolume: number) => {
     try {
       await changeVolume(newVolume);
       await playbackStateRevalidate();
-      await showHUD(`🔊 Volume: ${newVolume}%`);
+      await showToast({ style: Toast.Style.Success, title: `🔊 Volume: ${newVolume}%` });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleVolumeUp = async () => {
@@ -94,43 +98,45 @@ function QuickActionsCommand() {
 
   const handleLike = async () => {
     if (!trackId) {
-      await showHUD("❌ No track is currently playing");
-      return;
+      await showToast({ style: Toast.Style.Failure, title: "No track is currently playing" });
+      return false;
     }
     try {
       await addToMySavedTracks({ trackIds: [trackId] });
-      await showHUD("❤️ Liked");
+      await showToast({ style: Toast.Style.Success, title: "❤️ Liked" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleDislike = async () => {
     if (!trackId) {
-      await showHUD("❌ No track is currently playing");
-      return;
+      await showToast({ style: Toast.Style.Failure, title: "No track is currently playing" });
+      return false;
     }
     try {
       await removeFromMySavedTracks({ trackIds: [trackId] });
-      await showHUD("💔 Removed from Liked Songs");
+      await showToast({ style: Toast.Style.Success, title: "💔 Removed from Liked Songs" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleCopyUrl = async () => {
     if (!currentlyPlayingData || !currentlyPlayingData.item) {
-      await showHUD("❌ Nothing is currently playing");
-      return;
+      await showToast({ style: Toast.Style.Failure, title: "Nothing is currently playing" });
+      return false;
     }
     const external_urls = currentlyPlayingData.item.external_urls;
     const title = currentlyPlayingData.item.name;
 
     if (!external_urls?.spotify) {
-      await showHUD("❌ No Spotify URL available");
-      return;
+      await showToast({ style: Toast.Style.Failure, title: "No Spotify URL available" });
+      return false;
     }
 
     try {
@@ -138,11 +144,12 @@ function QuickActionsCommand() {
         html: `<a href="${external_urls.spotify}">${title}</a>`,
         text: external_urls.spotify,
       });
-      await showHUD("📋 URL copied to clipboard");
+      await showToast({ style: Toast.Style.Success, title: "📋 URL copied to clipboard" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleToggleShuffle = async () => {
@@ -150,11 +157,12 @@ function QuickActionsCommand() {
       const newState = !shuffleState;
       await toggleShuffle(newState);
       await playbackStateRevalidate();
-      await showHUD(newState ? "🔀 Shuffle On" : "➡️ Shuffle Off");
+      await showToast({ style: Toast.Style.Success, title: newState ? "🔀 Shuffle On" : "➡️ Shuffle Off" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleToggleRepeat = async () => {
@@ -171,26 +179,28 @@ function QuickActionsCommand() {
       await playbackStateRevalidate();
       const message =
         newState === "off" ? "➡️ Repeat Off" : newState === "track" ? "🔂 Repeat Track" : "🔁 Repeat Context";
-      await showHUD(message);
+      await showToast({ style: Toast.Style.Success, title: message });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   const handleStartRadio = async () => {
     if (!trackUri) {
-      await showHUD("❌ No track is currently playing");
-      return;
+      await showToast({ style: Toast.Style.Failure, title: "No track is currently playing" });
+      return false;
     }
     try {
       await startRadio(trackUri);
       await currentlyPlayingRevalidate();
-      await showHUD("📻 Started radio based on current track");
+      await showToast({ style: Toast.Style.Success, title: "📻 Started radio" });
     } catch (err) {
       const message = getUserFriendlyErrorMessage(err);
-      await showHUD(`❌ ${message}`);
+      await showToast({ style: Toast.Style.Failure, title: message });
     }
+    return false; // Prevents Raycast from closing
   };
 
   return (

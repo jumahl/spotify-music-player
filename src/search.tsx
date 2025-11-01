@@ -136,6 +136,7 @@ function SearchCommand() {
                                 } catch (error) {
                                   await showHUD("❌ Could not play album");
                                 }
+                                return false; // Prevents Raycast from closing
                               }}
                             />
                             {album.external_urls?.spotify && (
@@ -183,6 +184,7 @@ function SearchCommand() {
                                 } catch (error) {
                                   await showHUD("❌ Could not play playlist");
                                 }
+                                return false; // Prevents Raycast from closing
                               }}
                             />
                             {playlist.external_urls?.spotify && (
