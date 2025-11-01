@@ -1,0 +1,96 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "spotify-music-player",
+  "title": "Spotify Player",
+  "description": "Control Spotify playback on Windows",
+  "icon": "spotify-icon.svg",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "nowPlaying",
+      "title": "Now Playing",
+      "subtitle": "Spotify",
+      "description": "See what's currently playing on Spotify",
+      "mode": "view"
+    },
+    {
+      "name": "togglePlayPause",
+      "title": "Toggle Play/Pause",
+      "subtitle": "Spotify",
+      "description": "Toggle playback on Spotify",
+      "mode": "no-view"
+    },
+    {
+      "name": "next",
+      "title": "Next Track",
+      "subtitle": "Spotify",
+      "description": "Skip to next track",
+      "mode": "no-view"
+    },
+    {
+      "name": "previous",
+      "title": "Previous Track",
+      "subtitle": "Spotify",
+      "description": "Skip to previous track",
+      "mode": "no-view"
+    },
+    {
+      "name": "volumeUp",
+      "title": "Volume Up",
+      "subtitle": "Spotify",
+      "description": "Increase volume by 10%",
+      "mode": "no-view"
+    },
+    {
+      "name": "volumeDown",
+      "title": "Volume Down",
+      "subtitle": "Spotify",
+      "description": "Decrease volume by 10%",
+      "mode": "no-view"
+    },
+    {
+      "name": "like",
+      "title": "Like Current Track",
+      "subtitle": "Spotify",
+      "description": "Add current track to your Liked Songs",
+      "mode": "no-view"
+    },
+    {
+      "name": "copyUrl",
+      "title": "Copy Track URL",
+      "subtitle": "Spotify",
+      "description": "Copy Spotify URL of current track",
+      "mode": "no-view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.103.0",
+    "@raycast/utils": "^2.2.1",
+    "node-fetch": "^2.7.0",
+    "oazapfts": "^5.0.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "22.13.10",
+    "@types/node-fetch": "^2.6.13",
+    "@types/react": "19.0.10",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix",
+    "build": "ray build",
+    "publish": "npx @raycast/api@latest publish",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1"
+  },
+  "author": "jumahl",
+  "platforms": [
+    "Windows"
+  ],
+  "categories": [
+    "Media"
+  ]
+}
