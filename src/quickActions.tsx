@@ -9,6 +9,9 @@ import { skipToPrevious } from "./api/skipToPrevious";
 import { changeVolume } from "./api/changeVolume";
 import { addToMySavedTracks } from "./api/addToMySavedTracks";
 import { removeFromMySavedTracks } from "./api/removeFromMySavedTracks";
+import { toggleShuffle } from "./api/toggleShuffle";
+import { toggleRepeat } from "./api/toggleRepeat";
+import { startRadio } from "./api/startRadio";
 import { TrackObject } from "./helpers/spotify.api";
 import { getUserFriendlyErrorMessage } from "./helpers/getError";
 
@@ -24,6 +27,9 @@ function QuickActionsCommand() {
   const currentVolume = playbackStateData?.device?.volume_percent ?? 50;
   const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
   const trackId = isTrack ? (currentlyPlayingData?.item as TrackObject)?.id : undefined;
+  const trackUri = isTrack ? (currentlyPlayingData?.item as TrackObject)?.uri : undefined;
+  const shuffleState = playbackStateData?.shuffle_state ?? false;
+  const repeatState = playbackStateData?.repeat_state ?? "off";
 
   const handlePlayPause = async () => {
     try {
@@ -141,6 +147,54 @@ function QuickActionsCommand() {
     }
   };
 
+  const handleToggleShuffle = async () => {
+    try {
+      const newState = !shuffleState;
+      await toggleShuffle(newState);
+      await playbackStateRevalidate();
+      await showHUD(newState ? "🔀 Shuffle On" : "➡️ Shuffle Off");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleToggleRepeat = async () => {
+    try {
+      let newState: "track" | "context" | "off";
+      if (repeatState === "off") {
+        newState = "context";
+      } else if (repeatState === "context") {
+        newState = "track";
+      } else {
+        newState = "off";
+      }
+      await toggleRepeat(newState);
+      await playbackStateRevalidate();
+      const message =
+        newState === "off" ? "➡️ Repeat Off" : newState === "track" ? "🔂 Repeat Track" : "🔁 Repeat Context";
+      await showHUD(message);
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleStartRadio = async () => {
+    if (!trackUri) {
+      await showHUD("❌ No track is currently playing");
+      return;
+    }
+    try {
+      await startRadio(trackUri);
+      await currentlyPlayingRevalidate();
+      await showHUD("📻 Started radio based on current track");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
   return (
     <List searchBarPlaceholder="Search for actions...">
       <List.Item
@@ -209,6 +263,45 @@ function QuickActionsCommand() {
         actions={
           <ActionPanel>
             <Action title="Copy URL" onAction={handleCopyUrl} shortcut={{ modifiers: ["ctrl"], key: "c" }} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Toggle Shuffle"
+        subtitle={shuffleState ? "Turn shuffle off" : "Turn shuffle on"}
+        icon={Icon.Shuffle}
+        actions={
+          <ActionPanel>
+            <Action title="Toggle Shuffle" onAction={handleToggleShuffle} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Toggle Repeat"
+        subtitle={
+          repeatState === "off"
+            ? "Turn repeat on (context)"
+            : repeatState === "context"
+              ? "Repeat one track"
+              : "Turn repeat off"
+        }
+        icon={Icon.Repeat}
+        actions={
+          <ActionPanel>
+            <Action title="Toggle Repeat" onAction={handleToggleRepeat} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Start Radio"
+        subtitle="Start a radio station based on the current track"
+        icon={Icon.Music}
+        actions={
+          <ActionPanel>
+            <Action title="Start Radio" onAction={handleStartRadio} />
           </ActionPanel>
         }
       />

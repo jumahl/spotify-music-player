@@ -7,6 +7,9 @@ import { pause } from "./api/pause";
 import { play } from "./api/play";
 import { skipToNext } from "./api/skipToNext";
 import { skipToPrevious } from "./api/skipToPrevious";
+import { toggleShuffle } from "./api/toggleShuffle";
+import { toggleRepeat } from "./api/toggleRepeat";
+import { startRadio } from "./api/startRadio";
 
 function NowPlayingCommand() {
   const { currentlyPlayingData, currentlyPlayingIsLoading, currentlyPlayingRevalidate } = useCurrentlyPlaying();
@@ -14,6 +17,9 @@ function NowPlayingCommand() {
 
   const isPlaying = playbackStateData?.is_playing;
   const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
+  const shuffleState = playbackStateData?.shuffle_state ?? false;
+  const repeatState = playbackStateData?.repeat_state ?? "off";
+  const trackUri = isTrack ? (currentlyPlayingData?.item as TrackObject)?.uri : undefined;
 
   if (!currentlyPlayingData || !currentlyPlayingData.item) {
     return (
@@ -135,6 +141,35 @@ function NowPlayingCommand() {
               await playbackStateRevalidate();
             }}
           />
+          <Action
+            icon={Icon.Shuffle}
+            title={shuffleState ? "Turn Shuffle Off" : "Turn Shuffle On"}
+            onAction={async () => {
+              await toggleShuffle(!shuffleState);
+              await playbackStateRevalidate();
+            }}
+          />
+          <Action
+            icon={Icon.Repeat}
+            title={
+              repeatState === "off" ? "Repeat Context" : repeatState === "context" ? "Repeat Track" : "Turn Repeat Off"
+            }
+            onAction={async () => {
+              const newState = repeatState === "off" ? "context" : repeatState === "context" ? "track" : "off";
+              await toggleRepeat(newState);
+              await playbackStateRevalidate();
+            }}
+          />
+          {trackUri && (
+            <Action
+              icon={Icon.Music}
+              title="Start Radio"
+              onAction={async () => {
+                await startRadio(trackUri);
+                await currentlyPlayingRevalidate();
+              }}
+            />
+          )}
           {external_urls?.spotify && (
             <Action.OpenInBrowser
               title="Open in Spotify"

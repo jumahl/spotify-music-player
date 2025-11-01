@@ -3,7 +3,7 @@
   "name": "spotify-music-player",
   "title": "Spotify Player",
   "description": "Control Spotify playback on Windows",
-  "icon": "spotify-icon.svg",
+  "icon": "extension_icon.png",
   "license": "MIT",
   "commands": [
     {
