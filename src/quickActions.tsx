@@ -22,6 +22,7 @@ interface Preferences {
 function QuickActionsCommand() {
   const { playbackStateData, playbackStateRevalidate } = usePlaybackState();
   const { currentlyPlayingData, currentlyPlayingRevalidate } = useCurrentlyPlaying();
+  const preferences = getPreferenceValues<Preferences>();
 
   const isPlaying = playbackStateData?.is_playing;
   const currentVolume = playbackStateData?.device?.volume_percent ?? 50;
@@ -30,6 +31,7 @@ function QuickActionsCommand() {
   const trackUri = isTrack ? (currentlyPlayingData?.item as TrackObject)?.uri : undefined;
   const shuffleState = playbackStateData?.shuffle_state ?? false;
   const repeatState = playbackStateData?.repeat_state ?? "off";
+  const volumeStep = parseInt(preferences.volumeStep || "10", 10);
 
   const handlePlayPause = async () => {
     try {
@@ -81,16 +83,12 @@ function QuickActionsCommand() {
   };
 
   const handleVolumeUp = async () => {
-    const preferences = getPreferenceValues<Preferences>();
-    const step = parseInt(preferences.volumeStep || "10", 10);
-    const newVolume = Math.min(currentVolume + step, 100);
+    const newVolume = Math.min(currentVolume + volumeStep, 100);
     await handleVolumeChange(newVolume);
   };
 
   const handleVolumeDown = async () => {
-    const preferences = getPreferenceValues<Preferences>();
-    const step = parseInt(preferences.volumeStep || "10", 10);
-    const newVolume = Math.max(currentVolume - step, 0);
+    const newVolume = Math.max(currentVolume - volumeStep, 0);
     await handleVolumeChange(newVolume);
   };
 
@@ -352,7 +350,7 @@ function QuickActionsCommand() {
 
       <List.Item
         title="Volume Up"
-        subtitle={`Increase the volume by ${getPreferenceValues<Preferences>().volumeStep || "10"}%`}
+        subtitle={`Increase the volume by ${volumeStep}%`}
         icon={Icon.Plus}
         actions={
           <ActionPanel>
@@ -367,7 +365,7 @@ function QuickActionsCommand() {
 
       <List.Item
         title="Volume Down"
-        subtitle={`Decrease the volume by ${getPreferenceValues<Preferences>().volumeStep || "10"}%`}
+        subtitle={`Decrease the volume by ${volumeStep}%`}
         icon={Icon.Minus}
         actions={
           <ActionPanel>
