@@ -1,5 +1,5 @@
 import { useCachedPromise } from "@raycast/utils";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { getPlaybackState } from "../api/getPlaybackState";
 
 export function usePlaybackState() {

@@ -143,7 +143,7 @@ function NowPlayingCommand() {
           />
           <Action
             icon={Icon.Shuffle}
-            title={shuffleState ? "Turn Shuffle Off" : "Turn Shuffle On"}
+            title={shuffleState ? "Turn Shuffle off" : "Turn Shuffle on"}
             onAction={async () => {
               await toggleShuffle(!shuffleState);
               await playbackStateRevalidate();
