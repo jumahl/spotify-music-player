@@ -17,9 +17,13 @@ export default async function Command() {
     const external_urls = currentlyPlayingData.item.external_urls;
     const title = currentlyPlayingData.item.name;
 
+    if (!external_urls?.spotify) {
+      return await showHUD("❌ Could not get Spotify URL");
+    }
+
     await Clipboard.copy({
-      html: `<a href="${external_urls?.spotify}">${title}</a>`,
-      text: external_urls?.spotify,
+      html: `<a href="${external_urls.spotify}">${title}</a>`,
+      text: external_urls.spotify,
     });
 
     return await showHUD("📋 URL copied to clipboard");

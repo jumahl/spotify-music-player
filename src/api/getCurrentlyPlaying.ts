@@ -3,7 +3,7 @@ import { EpisodeObject, TrackObject } from "../helpers/spotify.api";
 import { getSpotifyClient } from "../helpers/withSpotifyClient";
 
 export async function getCurrentlyPlaying() {
-  const { spotifyClient } = getSpotifyClient();
+  const spotifyClient = getSpotifyClient();
 
   try {
     const response = await spotifyClient.getMePlayerCurrentlyPlaying({ additionalTypes: "episode" });

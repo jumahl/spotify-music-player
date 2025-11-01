@@ -2,7 +2,7 @@ import { getErrorMessage } from "../helpers/getError";
 import { getSpotifyClient } from "../helpers/withSpotifyClient";
 
 export async function skipToPrevious() {
-  const { spotifyClient } = getSpotifyClient();
+  const spotifyClient = getSpotifyClient();
 
   try {
     await spotifyClient.postMePlayerPrevious();

@@ -29,9 +29,7 @@ export function getSpotifyClient() {
     throw new Error("getSpotifyClient must be used when authenticated");
   }
 
-  return {
-    spotifyClient,
-  };
+  return spotifyClient;
 }
 
 export async function setSpotifyClient() {

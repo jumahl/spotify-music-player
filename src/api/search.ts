@@ -16,7 +16,7 @@ function filterNullItems<T>(category: { items?: (T | null)[] } | undefined) {
 }
 
 export async function search({ query, limit = 50, types = ["track", "artist", "album", "playlist"] }: SearchProps) {
-  const { spotifyClient } = getSpotifyClient();
+  const spotifyClient = getSpotifyClient();
 
   try {
     const response = await spotifyClient.search(query, types, {

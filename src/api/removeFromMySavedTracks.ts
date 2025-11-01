@@ -5,5 +5,5 @@ type RemoveFromMySavedTracksParams = {
 };
 
 export async function removeFromMySavedTracks(params: RemoveFromMySavedTracksParams): Promise<void> {
-  await deleteMeTracks(params.trackIds.join(","), { ids: params.trackIds });
+  await deleteMeTracks(params.trackIds.join(","));
 }

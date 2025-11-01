@@ -30,7 +30,7 @@ export default async function Command() {
     }
 
     // Check if track is already liked
-    const { spotifyClient } = getSpotifyClient();
+    const spotifyClient = getSpotifyClient();
     const isSaved = await spotifyClient.getMeTracksContains(trackId);
 
     if (isSaved?.[0]) {

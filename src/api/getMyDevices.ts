@@ -1,20 +1,16 @@
-import { showToast, Toast } from "@raycast/api";
-import { getErrorMessage } from "../helpers/getError";
+import { showFailureToast } from "@raycast/utils";
 import { getSpotifyClient } from "../helpers/withSpotifyClient";
 
 export async function getMyDevices() {
-  const { spotifyClient } = getSpotifyClient();
+  const spotifyClient = getSpotifyClient();
 
   try {
     const response = await spotifyClient.getMePlayerDevices();
     return response;
   } catch (err) {
-    const error = getErrorMessage(err);
-    await showToast({
-      style: Toast.Style.Failure,
+    await showFailureToast(err, {
       title: "Failed to get devices",
-      message: error,
     });
-    throw new Error(error);
+    throw err;
   }
 }
