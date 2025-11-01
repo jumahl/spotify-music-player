@@ -7,7 +7,6 @@ export function useCurrentlyPlaying() {
     keepPreviousData: true,
   });
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       revalidate();

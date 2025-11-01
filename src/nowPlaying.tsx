@@ -116,7 +116,7 @@ function NowPlayingCommand() {
           )}
           <Action
             icon={Icon.Forward}
-            title="Next"
+            title="Next Track"
             shortcut={{ modifiers: ["ctrl"], key: "arrowRight" }}
             onAction={async () => {
               await skipToNext();
@@ -125,7 +125,7 @@ function NowPlayingCommand() {
           />
           <Action
             icon={Icon.Rewind}
-            title="Previous"
+            title="Previous Track"
             shortcut={{ modifiers: ["ctrl"], key: "arrowLeft" }}
             onAction={async () => {
               await skipToPrevious();

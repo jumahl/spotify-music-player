@@ -5089,10 +5089,7 @@ export function getMeTopTracks(
  * Get next page
  *
  */
-export function getNext(
-  nextUrl: string,
-  opts?: Oazapfts.RequestOpts,
-) {
+export function getNext(nextUrl: string, opts?: Oazapfts.RequestOpts) {
   const url = nextUrl.replace(servers.server1, "");
   return oazapfts.ok(
     oazapfts.fetchJson<
