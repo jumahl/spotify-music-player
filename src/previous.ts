@@ -1,16 +1,16 @@
 import { showHUD } from "@raycast/api";
 import { setSpotifyClient } from "./helpers/withSpotifyClient";
 import { skipToPrevious } from "./api/skipToPrevious";
-import { getErrorMessage } from "./helpers/getError";
+import { getUserFriendlyErrorMessage } from "./helpers/getError";
 
 export default async function Command() {
   await setSpotifyClient();
 
   try {
     await skipToPrevious();
-    await showHUD("Skipped to previous");
+    await showHUD("⏮ Previous track");
   } catch (err) {
-    const error = getErrorMessage(err);
-    await showHUD(error);
+    const message = getUserFriendlyErrorMessage(err);
+    await showHUD(`❌ ${message}`);
   }
 }

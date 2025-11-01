@@ -1,19 +1,28 @@
-import { showHUD } from "@raycast/api";
+import { showHUD, getPreferenceValues } from "@raycast/api";
 import { setSpotifyClient } from "./helpers/withSpotifyClient";
 import { changeVolume } from "./api/changeVolume";
 import { getPlaybackState } from "./api/getPlaybackState";
+import { getUserFriendlyErrorMessage } from "./helpers/getError";
+
+interface Preferences {
+  volumeStep: string;
+}
 
 export default async function Command() {
   await setSpotifyClient();
 
-  const playbackStateData = await getPlaybackState();
-  const volume = playbackStateData?.device?.volume_percent as number;
-  const newVolume = Math.min(volume + 10, 100);
-
   try {
+    const preferences = getPreferenceValues<Preferences>();
+    const step = parseInt(preferences.volumeStep || "10", 10);
+
+    const playbackStateData = await getPlaybackState();
+    const volume = playbackStateData?.device?.volume_percent ?? 50;
+    const newVolume = Math.min(volume + step, 100);
+
     await changeVolume(newVolume);
-    await showHUD(`Volume set to ${newVolume}%`);
-  } catch {
-    await showHUD("No active device");
+    await showHUD(`🔊 Volume: ${newVolume}%`);
+  } catch (err) {
+    const message = getUserFriendlyErrorMessage(err);
+    await showHUD(`❌ ${message}`);
   }
 }

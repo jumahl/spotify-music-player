@@ -91,6 +91,7 @@ function NowPlayingCommand() {
             <Action
               icon={Icon.Pause}
               title="Pause"
+              shortcut={{ modifiers: [], key: "return" }}
               onAction={async () => {
                 await pause();
                 await playbackStateRevalidate();
@@ -100,6 +101,7 @@ function NowPlayingCommand() {
             <Action
               icon={Icon.Play}
               title="Play"
+              shortcut={{ modifiers: [], key: "return" }}
               onAction={async () => {
                 await play();
                 await playbackStateRevalidate();
@@ -109,7 +111,7 @@ function NowPlayingCommand() {
           <Action
             icon={Icon.Forward}
             title="Next"
-            shortcut={{ modifiers: ["cmd"], key: "arrowRight" }}
+            shortcut={{ modifiers: ["ctrl"], key: "arrowRight" }}
             onAction={async () => {
               await skipToNext();
               await currentlyPlayingRevalidate();
@@ -118,7 +120,7 @@ function NowPlayingCommand() {
           <Action
             icon={Icon.Rewind}
             title="Previous"
-            shortcut={{ modifiers: ["cmd"], key: "arrowLeft" }}
+            shortcut={{ modifiers: ["ctrl"], key: "arrowLeft" }}
             onAction={async () => {
               await skipToPrevious();
               await currentlyPlayingRevalidate();
@@ -127,7 +129,7 @@ function NowPlayingCommand() {
           <Action
             icon={Icon.Repeat}
             title="Refresh"
-            shortcut={{ modifiers: ["cmd"], key: "r" }}
+            shortcut={{ modifiers: ["ctrl"], key: "r" }}
             onAction={async () => {
               await currentlyPlayingRevalidate();
               await playbackStateRevalidate();
@@ -137,7 +139,7 @@ function NowPlayingCommand() {
             <Action.OpenInBrowser
               title="Open in Spotify"
               url={external_urls.spotify}
-              shortcut={{ modifiers: ["cmd"], key: "o" }}
+              shortcut={{ modifiers: ["ctrl"], key: "o" }}
             />
           )}
         </ActionPanel>

@@ -1,0 +1,299 @@
+import { ActionPanel, List, Action, Icon, showHUD, getPreferenceValues, Clipboard } from "@raycast/api";
+import { View } from "./components/View";
+import { usePlaybackState } from "./hooks/usePlaybackState";
+import { useCurrentlyPlaying } from "./hooks/useCurrentlyPlaying";
+import { play } from "./api/play";
+import { pause } from "./api/pause";
+import { skipToNext } from "./api/skipToNext";
+import { skipToPrevious } from "./api/skipToPrevious";
+import { changeVolume } from "./api/changeVolume";
+import { addToMySavedTracks } from "./api/addToMySavedTracks";
+import { removeFromMySavedTracks } from "./api/removeFromMySavedTracks";
+import { TrackObject } from "./helpers/spotify.api";
+import { getUserFriendlyErrorMessage } from "./helpers/getError";
+
+interface Preferences {
+  volumeStep: string;
+}
+
+function QuickActionsCommand() {
+  const { playbackStateData, playbackStateRevalidate } = usePlaybackState();
+  const { currentlyPlayingData, currentlyPlayingRevalidate } = useCurrentlyPlaying();
+
+  const isPlaying = playbackStateData?.is_playing;
+  const currentVolume = playbackStateData?.device?.volume_percent ?? 50;
+  const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
+  const trackId = isTrack ? (currentlyPlayingData?.item as TrackObject)?.id : undefined;
+
+  const handlePlayPause = async () => {
+    try {
+      if (isPlaying) {
+        await pause();
+        await showHUD("⏸ Paused");
+      } else {
+        await play();
+        await showHUD("▶️ Playing");
+      }
+      await playbackStateRevalidate();
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      await skipToNext();
+      await currentlyPlayingRevalidate();
+      await showHUD("⏭ Next track");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handlePrevious = async () => {
+    try {
+      await skipToPrevious();
+      await currentlyPlayingRevalidate();
+      await showHUD("⏮ Previous track");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleVolumeChange = async (newVolume: number) => {
+    try {
+      await changeVolume(newVolume);
+      await playbackStateRevalidate();
+      await showHUD(`🔊 Volume: ${newVolume}%`);
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleVolumeUp = async () => {
+    const preferences = getPreferenceValues<Preferences>();
+    const step = parseInt(preferences.volumeStep || "10", 10);
+    const newVolume = Math.min(currentVolume + step, 100);
+    await handleVolumeChange(newVolume);
+  };
+
+  const handleVolumeDown = async () => {
+    const preferences = getPreferenceValues<Preferences>();
+    const step = parseInt(preferences.volumeStep || "10", 10);
+    const newVolume = Math.max(currentVolume - step, 0);
+    await handleVolumeChange(newVolume);
+  };
+
+  const handleLike = async () => {
+    if (!trackId) {
+      await showHUD("❌ No track is currently playing");
+      return;
+    }
+    try {
+      await addToMySavedTracks({ trackIds: [trackId] });
+      await showHUD("❤️ Liked");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleDislike = async () => {
+    if (!trackId) {
+      await showHUD("❌ No track is currently playing");
+      return;
+    }
+    try {
+      await removeFromMySavedTracks({ trackIds: [trackId] });
+      await showHUD("💔 Removed from Liked Songs");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  const handleCopyUrl = async () => {
+    if (!currentlyPlayingData || !currentlyPlayingData.item) {
+      await showHUD("❌ Nothing is currently playing");
+      return;
+    }
+    const external_urls = currentlyPlayingData.item.external_urls;
+    const title = currentlyPlayingData.item.name;
+
+    if (!external_urls?.spotify) {
+      await showHUD("❌ No Spotify URL available");
+      return;
+    }
+
+    try {
+      await Clipboard.copy({
+        html: `<a href="${external_urls.spotify}">${title}</a>`,
+        text: external_urls.spotify,
+      });
+      await showHUD("📋 URL copied to clipboard");
+    } catch (err) {
+      const message = getUserFriendlyErrorMessage(err);
+      await showHUD(`❌ ${message}`);
+    }
+  };
+
+  return (
+    <List searchBarPlaceholder="Search for actions...">
+      <List.Item
+        title={isPlaying ? "Pause" : "Play"}
+        subtitle={isPlaying ? "Pause the current track" : "Resume playback"}
+        icon={isPlaying ? Icon.Pause : Icon.Play}
+        actions={
+          <ActionPanel>
+            <Action title={isPlaying ? "Pause" : "Play"} onAction={handlePlayPause} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Like"
+        subtitle="Like the current track"
+        icon={Icon.Heart}
+        actions={
+          <ActionPanel>
+            <Action title="Like Current Track" onAction={handleLike} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Dislike"
+        subtitle="Dislike the current track"
+        icon={Icon.HeartDisabled}
+        actions={
+          <ActionPanel>
+            <Action title="Dislike Current Track" onAction={handleDislike} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Next"
+        subtitle="Skip to the next track"
+        icon={Icon.Forward}
+        actions={
+          <ActionPanel>
+            <Action title="Next Track" onAction={handleNext} shortcut={{ modifiers: ["ctrl"], key: "arrowRight" }} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Previous"
+        subtitle="Skip to the previous track"
+        icon={Icon.Rewind}
+        actions={
+          <ActionPanel>
+            <Action
+              title="Previous Track"
+              onAction={handlePrevious}
+              shortcut={{ modifiers: ["ctrl"], key: "arrowLeft" }}
+            />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Copy Track URL"
+        subtitle="Copy Spotify URL of current track to clipboard"
+        icon={Icon.Link}
+        actions={
+          <ActionPanel>
+            <Action title="Copy URL" onAction={handleCopyUrl} shortcut={{ modifiers: ["ctrl"], key: "c" }} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume Mute"
+        subtitle="Change the volume to 0%"
+        icon={Icon.SpeakerOff}
+        actions={
+          <ActionPanel>
+            <Action title="Mute Volume" onAction={() => handleVolumeChange(0)} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume Low"
+        subtitle="Change the volume to 33%"
+        icon={Icon.SpeakerDown}
+        actions={
+          <ActionPanel>
+            <Action title="Set Volume to 33%" onAction={() => handleVolumeChange(33)} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume Medium"
+        subtitle="Change the volume to 66%"
+        icon={Icon.Speaker}
+        actions={
+          <ActionPanel>
+            <Action title="Set Volume to 66%" onAction={() => handleVolumeChange(66)} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume High"
+        subtitle="Change the volume to 100%"
+        icon={Icon.SpeakerOn}
+        actions={
+          <ActionPanel>
+            <Action title="Set Volume to 100%" onAction={() => handleVolumeChange(100)} />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume Up"
+        subtitle={`Increase the volume by ${getPreferenceValues<Preferences>().volumeStep || "10"}%`}
+        icon={Icon.Plus}
+        actions={
+          <ActionPanel>
+            <Action
+              title="Increase Volume"
+              onAction={handleVolumeUp}
+              shortcut={{ modifiers: ["ctrl"], key: "arrowUp" }}
+            />
+          </ActionPanel>
+        }
+      />
+
+      <List.Item
+        title="Volume Down"
+        subtitle={`Decrease the volume by ${getPreferenceValues<Preferences>().volumeStep || "10"}%`}
+        icon={Icon.Minus}
+        actions={
+          <ActionPanel>
+            <Action
+              title="Decrease Volume"
+              onAction={handleVolumeDown}
+              shortcut={{ modifiers: ["ctrl"], key: "arrowDown" }}
+            />
+          </ActionPanel>
+        }
+      />
+    </List>
+  );
+}
+
+export default function Command() {
+  return (
+    <View>
+      <QuickActionsCommand />
+    </View>
+  );
+}

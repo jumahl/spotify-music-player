@@ -1,132 +1,152 @@
-# Spotify Player para Raycast (Windows)
+# Spotify Player for Raycast (Windows)
 
-Extensión de Raycast para controlar Spotify en Windows usando la Spotify Web API.
+Raycast extension to control Spotify on Windows using the Spotify Web API.
 
-## 🎵 Características
+## 🎵 Features
 
-Esta extensión te permite controlar Spotify directamente desde Raycast en Windows:
+This extension allows you to control Spotify directly from Raycast on Windows:
 
-- **Now Playing**: Ver información detallada de la canción actual con portada del álbum
-- **Toggle Play/Pause**: Pausar o reanudar la reproducción
-- **Next Track**: Saltar a la siguiente canción
-- **Previous Track**: Volver a la canción anterior
-- **Volume Up/Down**: Aumentar o disminuir el volumen en incrementos de 10%
-- **Like Track**: Agregar la canción actual a tus "Me gusta"
-- **Copy URL**: Copiar el enlace de Spotify de la canción actual
+- **Search**: Search for songs, artists, albums, and playlists
+- **Now Playing**: View detailed information about the current song with album artwork
+- **Quick Actions**: Quick playback controls (Play/Pause, Like/Dislike, Next, Previous, Volume, Copy URL)
 
-## 📋 Requisitos
+## 📋 Requirements
 
-- **Spotify Premium**: Necesitas una suscripción Premium para controlar la reproducción
-- **Raycast para Windows**: Beta de Raycast para Windows
-- **Dispositivo Spotify activo**: La app de Spotify (escritorio, móvil o web) debe estar reproduciendo música
+- **Spotify Premium**: You need a Premium subscription to control playback
+- **Raycast for Windows**: Raycast beta for Windows
+- **Active Spotify device**: The Spotify app (desktop, mobile, or web) must be playing music
 
-## 🚀 Instalación
+## 🚀 Installation
 
-### Desarrollo Local
+### Local Development
 
-1. Clona o descarga este repositorio
-2. Abre el directorio en la terminal
-3. Instala las dependencias:
+1. Clone or download this repository
+2. Open the directory in terminal
+3. Install dependencies:
    ```bash
    npm install
    ```
-4. Inicia el modo desarrollo:
+4. Start development mode:
    ```bash
    npm run dev
    ```
-5. Raycast se abrirá automáticamente y detectará la extensión
+5. Raycast will open automatically and detect the extension
 
-### Primera Configuración
+### First Setup
 
-1. La primera vez que uses cualquier comando, se te pedirá autenticarte con Spotify
-2. Haz clic en "Authorize" y sigue las instrucciones en el navegador
-3. Acepta los permisos solicitados
-4. ¡Listo! Ya puedes usar todos los comandos
+1. The first time you use any command, you'll be asked to authenticate with Spotify
+2. Click "Authorize" and follow the instructions in your browser
+3. Accept the requested permissions
+4. Done! You can now use all commands
 
-## 🎮 Comandos Disponibles
+## 🎮 Available Commands
+
+### Search
+
+Search for songs, artists, albums, and playlists on Spotify:
+
+- **Filter by category**: Use the dropdown to filter by All, Artists, Songs, Albums, or Playlists
+- **Real-time results**: Search updates as you type
+- **Detailed information**: View popularity, followers, release dates, etc.
+- **Actions**: Play songs, open in Spotify
+
+**Features:**
+
+- Unified search across Spotify's entire catalog
+- Shows up to 3-4 results per category in "All" view
+- Unlimited results when filtering by a specific category
 
 ### Now Playing
 
-Muestra información detallada de lo que está sonando:
+Shows detailed information about what's currently playing:
 
-- Portada del álbum
-- Nombre de la canción
-- Artista
-- Álbum
-- Duración
-- Acciones rápidas (Play/Pause, Next, Previous, Abrir en Spotify)
+- Album artwork
+- Song name
+- Artist
+- Album
+- Duration
+- **Auto-refresh**: Information updates every 5 seconds automatically
+- Quick actions (Play/Pause, Next, Previous, Refresh, Open in Spotify)
 
-**Atajos de teclado:**
+**Keyboard shortcuts:**
 
-- `Cmd + →`: Siguiente canción
-- `Cmd + ←`: Canción anterior
-- `Cmd + R`: Actualizar información
-- `Cmd + O`: Abrir en Spotify
+- `Enter`: Play/Pause
+- `Ctrl + →`: Next song
+- `Ctrl + ←`: Previous song
+- `Ctrl + R`: Refresh information
+- `Ctrl + O`: Open in Spotify
 
-### Toggle Play/Pause
+### Quick Actions
 
-Pausa o reanuda la reproducción con un solo comando.
+List of quick actions to control playback:
 
-### Next Track
+- **Play/Pause**: Pause or resume playback
+- **Like**: Add current song to "Liked Songs" ❤️
+- **Dislike**: Remove song from "Liked Songs" 💔
+- **Next**: Skip to next song (Ctrl + →)
+- **Previous**: Go back to previous song (Ctrl + ←)
+- **Copy Track URL**: Copy Spotify link to clipboard (Ctrl + C)
+- **Volume Mute**: Mute (0%)
+- **Volume Low**: Low volume (33%)
+- **Volume Medium**: Medium volume (66%)
+- **Volume High**: High volume (100%)
+- **Volume Up**: Increase volume (Ctrl + ↑)
+- **Volume Down**: Decrease volume (Ctrl + ↓)
 
-Salta a la siguiente canción en la cola.
+**Preferences:**
 
-### Previous Track
+- **Volume Step**: Configure volume increment (5%, 10%, 15%, or 20%)
 
-Vuelve a la canción anterior.
+## ⚙️ Preferences
 
-### Volume Up
+The extension includes the following configurable preferences:
 
-Aumenta el volumen en 10% (máximo 100%).
+- **Show Album Art**: Show or hide album artwork in Now Playing
+- **Volume Step**: Volume amount to increase/decrease (5%, 10%, 15%, 20%)
 
-### Volume Down
+## 🛠️ Development
 
-Disminuye el volumen en 10% (mínimo 0%).
-
-### Like Current Track
-
-Agrega la canción actual a tu biblioteca "Canciones que te gustan".
-
-### Copy Track URL
-
-Copia el enlace de Spotify de la canción actual al portapapeles.
-
-## 🛠️ Desarrollo
-
-### Estructura del Proyecto
+### Project Structure
 
 ```
 spotify-music-player/
 ├── src/
-│   ├── api/                    # Funciones de la API de Spotify
-│   │   ├── oauth.ts            # Configuración OAuth
+│   ├── api/                    # Spotify API functions
+│   │   ├── oauth.ts            # OAuth configuration
 │   │   ├── getCurrentlyPlaying.ts
 │   │   ├── getPlaybackState.ts
+│   │   ├── search.ts
 │   │   ├── play.ts
 │   │   ├── pause.ts
+│   │   ├── addToMySavedTracks.ts
+│   │   ├── removeFromMySavedTracks.ts
 │   │   └── ...
-│   ├── helpers/                # Utilidades
-│   │   ├── spotify.api.ts      # Cliente API generado
+│   ├── helpers/                # Utilities
+│   │   ├── spotify.api.ts      # Generated API client
 │   │   ├── withSpotifyClient.tsx
 │   │   └── getError.ts
 │   ├── hooks/                  # React hooks
 │   │   ├── useCurrentlyPlaying.ts
-│   │   └── usePlaybackState.ts
-│   ├── components/             # Componentes React
-│   │   └── View.tsx
-│   └── [comandos].ts/tsx       # Comandos de Raycast
+│   │   ├── usePlaybackState.ts
+│   │   └── useSearch.ts
+│   ├── components/             # React components
+│   │   ├── View.tsx
+│   │   └── TrackListItem.tsx
+│   ├── search.tsx              # Search command
+│   ├── nowPlaying.tsx          # Now Playing command
+│   └── quickActions.tsx        # Quick Actions command
 ├── assets/
 │   └── spotify-icon.svg
 └── package.json
 ```
 
-### Scripts Disponibles
+### Available Scripts
 
 ```bash
-# Modo desarrollo (hot reload)
+# Development mode (hot reload)
 npm run dev
 
-# Compilar
+# Build
 npm run build
 
 # Lint
@@ -136,69 +156,77 @@ npm run lint
 npm run fix-lint
 ```
 
-## 🔧 Arquitectura Técnica
+## 🔧 Technical Architecture
 
-Esta extensión usa **Spotify Web API** en lugar de AppleScript (que solo funciona en Mac). Esto significa que:
+This extension uses the **Spotify Web API** instead of AppleScript (which only works on Mac). This means:
 
-✅ **Funciona en Windows** (y también funcionaría en Linux si Raycast lo soporta)  
-✅ **No depende de la app de escritorio** - Puede controlar cualquier dispositivo Spotify  
-✅ **Más características disponibles** - Acceso completo a la API de Spotify  
-✅ **Más confiable** - No depende de scripting del sistema operativo
+✅ **Works on Windows** (and would also work on Linux if Raycast supports it)  
+✅ **Not dependent on desktop app** - Can control any Spotify device  
+✅ **More features available** - Full access to Spotify API  
+✅ **More reliable** - Doesn't depend on OS scripting
 
-### Autenticación
+### Implemented Improvements
 
-Se usa OAuth 2.0 con PKCE (Proof Key for Code Exchange) para una autenticación segura sin necesidad de almacenar secretos en el cliente.
+🎯 **Better error handling**: User-friendly error messages  
+🔄 **Auto-refresh**: Now Playing updates every 5 seconds  
+⌨️ **Windows shortcuts**: All shortcuts use Ctrl instead of Cmd  
+🎨 **Emoji messages**: Enhanced visual feedback with emojis  
+⚙️ **Configurable preferences**: Customize volume step and display
 
-### Permisos (Scopes)
+### Authentication
 
-La extensión solicita los siguientes permisos:
+Uses OAuth 2.0 with PKCE (Proof Key for Code Exchange) for secure authentication without storing client secrets.
 
-- `playlist-modify-private` - Modificar playlists privadas
-- `playlist-modify-public` - Modificar playlists públicas
-- `playlist-read-collaborative` - Leer playlists colaborativas
-- `playlist-read-private` - Leer playlists privadas
-- `user-follow-read` - Leer artistas seguidos
-- `user-library-modify` - Modificar biblioteca (Me gusta)
-- `user-library-read` - Leer biblioteca
-- `user-modify-playback-state` - Controlar reproducción
-- `user-read-currently-playing` - Ver canción actual
-- `user-read-playback-state` - Ver estado de reproducción
-- `user-read-private` - Leer perfil privado
-- `user-top-read` - Leer top artistas/canciones
+### Permissions (Scopes)
 
-## ⚠️ Limitaciones
+The extension requests the following permissions:
 
-- **Requiere Spotify Premium**: El control de reproducción solo está disponible para usuarios Premium
-- **Dispositivo activo necesario**: Debe haber un dispositivo Spotify reproduciendo música (puede ser móvil, escritorio o web)
-- **Rate limiting**: La API de Spotify tiene límites de peticiones por segundo
+- `playlist-modify-private` - Modify private playlists
+- `playlist-modify-public` - Modify public playlists
+- `playlist-read-collaborative` - Read collaborative playlists
+- `playlist-read-private` - Read private playlists
+- `user-follow-read` - Read followed artists
+- `user-library-modify` - Modify library (Liked Songs)
+- `user-library-read` - Read library
+- `user-modify-playback-state` - Control playback
+- `user-read-currently-playing` - View current song
+- `user-read-playback-state` - View playback state
+- `user-read-private` - Read private profile
+- `user-top-read` - Read top artists/songs
 
-## 🐛 Solución de Problemas
+## ⚠️ Limitations
+
+- **Requires Spotify Premium**: Playback control is only available for Premium users
+- **Active device required**: A Spotify device must be playing music (can be mobile, desktop, or web)
+- **Rate limiting**: Spotify API has limits on requests per second
+
+## 🐛 Troubleshooting
 
 ### "No active device"
 
-- Asegúrate de que Spotify está reproduciendo música en algún dispositivo
-- Abre la app de Spotify (escritorio, móvil o web) y reproduce algo
+- Make sure Spotify is playing music on any device
+- Open the Spotify app (desktop, mobile, or web) and play something
 
 ### "Nothing is currently playing"
 
-- Inicia la reproducción en Spotify primero
-- Usa el comando "Now Playing" para verificar
+- Start playback on Spotify first
+- Use the "Now Playing" command to verify
 
-### Errores de autenticación
+### Authentication errors
 
-- Revoca el acceso en tu [configuración de Spotify](https://www.spotify.com/account/apps/)
-- Vuelve a ejecutar cualquier comando para re-autenticar
+- Revoke access in your [Spotify settings](https://www.spotify.com/account/apps/)
+- Run any command again to re-authenticate
 
-### La extensión no aparece en Raycast
+### Extension doesn't appear in Raycast
 
-- Asegúrate de estar en modo desarrollo: `npm run dev`
-- Verifica que Raycast esté actualizado
-- Revisa los logs de Raycast para errores
+- Make sure you're in development mode: `npm run dev`
+- Verify that Raycast is updated
+- Check Raycast logs for errors
 
-## 📝 Licencia
+## 📝 License
 
 MIT
 
-## 🙏 Créditos
+## 🙏 Credits
 
-Basado en la extensión original [Spotify Player](https://github.com/raycast/extensions/tree/main/extensions/spotify-player) del repositorio de Raycast, adaptada para funcionar en Windows usando la Spotify Web API.
+Based on the original [Spotify Player](https://github.com/raycast/extensions/tree/main/extensions/spotify-player) extension from the Raycast repository, adapted to work on Windows using the Spotify Web API.

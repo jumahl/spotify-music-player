@@ -7,60 +7,64 @@
   "license": "MIT",
   "commands": [
     {
+      "name": "search",
+      "title": "Search",
+      "subtitle": "Spotify",
+      "description": "Search for songs, artists, albums, and playlists on Spotify",
+      "mode": "view"
+    },
+    {
       "name": "nowPlaying",
       "title": "Now Playing",
       "subtitle": "Spotify",
       "description": "See what's currently playing on Spotify",
+      "mode": "view",
+      "preferences": [
+        {
+          "name": "showAlbumArt",
+          "type": "checkbox",
+          "required": false,
+          "title": "Show Album Art",
+          "description": "Display album artwork in the Now Playing view",
+          "default": true,
+          "label": "Show album artwork"
+        }
+      ]
+    },
+    {
+      "name": "quickActions",
+      "title": "Quick Actions",
+      "subtitle": "Spotify",
+      "description": "Quick actions to control Spotify playback",
       "mode": "view"
-    },
+    }
+  ],
+  "preferences": [
     {
-      "name": "togglePlayPause",
-      "title": "Toggle Play/Pause",
-      "subtitle": "Spotify",
-      "description": "Toggle playback on Spotify",
-      "mode": "no-view"
-    },
-    {
-      "name": "next",
-      "title": "Next Track",
-      "subtitle": "Spotify",
-      "description": "Skip to next track",
-      "mode": "no-view"
-    },
-    {
-      "name": "previous",
-      "title": "Previous Track",
-      "subtitle": "Spotify",
-      "description": "Skip to previous track",
-      "mode": "no-view"
-    },
-    {
-      "name": "volumeUp",
-      "title": "Volume Up",
-      "subtitle": "Spotify",
-      "description": "Increase volume by 10%",
-      "mode": "no-view"
-    },
-    {
-      "name": "volumeDown",
-      "title": "Volume Down",
-      "subtitle": "Spotify",
-      "description": "Decrease volume by 10%",
-      "mode": "no-view"
-    },
-    {
-      "name": "like",
-      "title": "Like Current Track",
-      "subtitle": "Spotify",
-      "description": "Add current track to your Liked Songs",
-      "mode": "no-view"
-    },
-    {
-      "name": "copyUrl",
-      "title": "Copy Track URL",
-      "subtitle": "Spotify",
-      "description": "Copy Spotify URL of current track",
-      "mode": "no-view"
+      "name": "volumeStep",
+      "type": "dropdown",
+      "required": false,
+      "title": "Volume Step",
+      "description": "Amount to increase/decrease volume",
+      "default": "10",
+      "data": [
+        {
+          "title": "5%",
+          "value": "5"
+        },
+        {
+          "title": "10%",
+          "value": "10"
+        },
+        {
+          "title": "15%",
+          "value": "15"
+        },
+        {
+          "title": "20%",
+          "value": "20"
+        }
+      ]
     }
   ],
   "dependencies": {
