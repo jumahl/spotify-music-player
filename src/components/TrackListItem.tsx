@@ -1,11 +1,11 @@
 import { List, ActionPanel, Action, Icon, showHUD } from "@raycast/api";
-import { TrackObject, AlbumObject } from "../helpers/spotify.api";
+import { TrackObject, SimplifiedAlbumObject } from "../helpers/spotify.api";
 import { play } from "../api/play";
 import { getUserFriendlyErrorMessage } from "../helpers/getError";
 
 type TrackListItemProps = {
   track: TrackObject;
-  album?: AlbumObject;
+  album?: SimplifiedAlbumObject;
 };
 
 export default function TrackListItem({ track, album }: TrackListItemProps) {

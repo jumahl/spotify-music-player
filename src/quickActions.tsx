@@ -26,7 +26,7 @@ function QuickActionsCommand() {
 
   const isPlaying = playbackStateData?.is_playing;
   const currentVolume = playbackStateData?.device?.volume_percent ?? 50;
-  const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
+  const isTrack = currentlyPlayingData?.data?.currently_playing_type !== "episode";
   const trackId = isTrack ? (currentlyPlayingData?.item as TrackObject)?.id : undefined;
   const trackUri = isTrack ? (currentlyPlayingData?.item as TrackObject)?.uri : undefined;
   const shuffleState = playbackStateData?.shuffle_state ?? false;
@@ -211,11 +211,7 @@ function QuickActionsCommand() {
         icon={isPlaying ? Icon.Pause : Icon.Play}
         actions={
           <ActionPanel>
-            <Action
-              title={isPlaying ? "Pause" : "Play"}
-              onAction={handlePlayPause}
-              shortcut={{ modifiers: [], key: "enter" }}
-            />
+            <Action title={isPlaying ? "Pause" : "Play"} onAction={handlePlayPause} />
           </ActionPanel>
         }
       />

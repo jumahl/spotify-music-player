@@ -7,8 +7,10 @@ export async function getPlaybackState() {
 
   try {
     const response = await spotifyClient.getMePlayer({ additionalTypes: "episode" });
-    // Type is coming back as `unknown` for some reason
-    return response as CurrentlyPlayingContextObject;
+    if (response && response.status === 200) {
+      return response.data as CurrentlyPlayingContextObject;
+    }
+    return undefined;
   } catch (err) {
     const error = getErrorMessage(err);
     console.log("getPlaybackState.ts Error:", error);

@@ -7,10 +7,10 @@ export async function getCurrentlyPlaying() {
 
   try {
     const response = await spotifyClient.getMePlayerCurrentlyPlaying({ additionalTypes: "episode" });
-    if (response) {
+    if (response && response.status === 200) {
       return {
         ...response,
-        item: response.item as unknown as EpisodeObject | TrackObject,
+        item: response.data.item as unknown as EpisodeObject | TrackObject,
       };
     }
     return undefined;

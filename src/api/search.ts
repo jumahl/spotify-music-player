@@ -22,11 +22,21 @@ export async function search({ query, limit = 50, types = ["track", "artist", "a
     const response = await spotifyClient.search(query, types, {
       limit,
     });
+
+    if (response.status === 200) {
+      return {
+        tracks: filterNullItems(response.data.tracks),
+        artists: filterNullItems(response.data.artists),
+        albums: filterNullItems(response.data.albums),
+        playlists: filterNullItems(response.data.playlists),
+      };
+    }
+
     return {
-      tracks: filterNullItems(response.tracks),
-      artists: filterNullItems(response.artists),
-      albums: filterNullItems(response.albums),
-      playlists: filterNullItems(response.playlists),
+      tracks: undefined,
+      artists: undefined,
+      albums: undefined,
+      playlists: undefined,
     };
   } catch (err) {
     const error = getErrorMessage(err);

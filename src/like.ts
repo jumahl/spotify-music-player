@@ -17,7 +17,7 @@ export default async function Command() {
       return await showHUD("❌ Nothing is currently playing");
     }
 
-    const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
+    const isTrack = currentlyPlayingData?.data?.currently_playing_type !== "episode";
 
     if (!isTrack) {
       return await showHUD("❌ Liking episodes is not supported yet");
@@ -33,7 +33,7 @@ export default async function Command() {
     const spotifyClient = getSpotifyClient();
     const isSaved = await spotifyClient.getMeTracksContains(trackId);
 
-    if (isSaved?.[0]) {
+    if (isSaved.status === 200 && isSaved.data?.[0]) {
       return await showHUD("ℹ️ Track is already in your Liked Songs");
     }
 

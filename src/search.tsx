@@ -4,6 +4,7 @@ import { View } from "./components/View";
 import { useSearch } from "./hooks/useSearch";
 import TrackListItem from "./components/TrackListItem";
 import { play } from "./api/play";
+import type { ArtistObject, SimplifiedAlbumObject, TrackObject, SimplifiedPlaylistObject } from "./helpers/spotify.api";
 
 type FilterValue = "all" | "artists" | "tracks" | "albums" | "playlists";
 
@@ -57,31 +58,32 @@ function SearchCommand() {
                 title="Artists"
                 subtitle={showAll ? `${Math.min(3, searchData.artists.items.length)}` : undefined}
               >
-                {searchData.artists.items
-                  .slice(0, showAll ? 3 : undefined)
-                  .filter(Boolean)
-                  .map((artist) => {
-                    if (!artist) return null;
-                    return (
-                      <List.Item
-                        key={artist.id}
-                        title={artist.name || "Unknown Artist"}
-                        subtitle={`${artist.followers?.total?.toLocaleString() || 0} followers`}
-                        icon={{ source: artist.images?.[0]?.url || Icon.Person }}
-                        accessories={[{ text: `${artist.popularity}%`, tooltip: "Popularity" }]}
-                        actions={
-                          <ActionPanel>
-                            {artist.external_urls?.spotify && (
-                              <Action.OpenInBrowser title="Open in Spotify" url={artist.external_urls.spotify} />
-                            )}
-                            {artist.external_urls?.spotify && (
-                              <Action.CopyToClipboard title="Copy Spotify URL" content={artist.external_urls.spotify} />
-                            )}
-                          </ActionPanel>
-                        }
-                      />
-                    );
-                  })}
+                {searchData.artists.items.slice(0, showAll ? 3 : undefined).map((artist) => {
+                  if (!artist) return null;
+                  const typedArtist = artist as ArtistObject;
+                  return (
+                    <List.Item
+                      key={typedArtist.id}
+                      title={typedArtist.name || "Unknown Artist"}
+                      subtitle={`${typedArtist.followers?.total?.toLocaleString() || 0} followers`}
+                      icon={{ source: typedArtist.images?.[0]?.url || Icon.Person }}
+                      accessories={[{ text: `${typedArtist.popularity}%`, tooltip: "Popularity" }]}
+                      actions={
+                        <ActionPanel>
+                          {typedArtist.external_urls?.spotify && (
+                            <Action.OpenInBrowser title="Open in Spotify" url={typedArtist.external_urls.spotify} />
+                          )}
+                          {typedArtist.external_urls?.spotify && (
+                            <Action.CopyToClipboard
+                              title="Copy Spotify URL"
+                              content={typedArtist.external_urls.spotify}
+                            />
+                          )}
+                        </ActionPanel>
+                      }
+                    />
+                  );
+                })}
               </List.Section>
             )}
           {/* Tracks Section */}
@@ -92,13 +94,11 @@ function SearchCommand() {
                 title="Songs"
                 subtitle={showAll ? `${Math.min(4, searchData.tracks.items.length)}` : undefined}
               >
-                {searchData.tracks.items
-                  .slice(0, showAll ? 4 : undefined)
-                  .filter(Boolean)
-                  .map((track) => {
-                    if (!track) return null;
-                    return <TrackListItem key={track.id} track={track} album={track.album} />;
-                  })}
+                {searchData.tracks.items.slice(0, showAll ? 4 : undefined).map((track) => {
+                  if (!track) return null;
+                  const typedTrack = track as TrackObject;
+                  return <TrackListItem key={typedTrack.id} track={typedTrack} album={typedTrack.album} />;
+                })}
               </List.Section>
             )}
           {/* Albums Section */}
@@ -109,47 +109,48 @@ function SearchCommand() {
                 title="Albums"
                 subtitle={showAll ? `${Math.min(3, searchData.albums.items.length)}` : undefined}
               >
-                {searchData.albums.items
-                  .slice(0, showAll ? 3 : undefined)
-                  .filter(Boolean)
-                  .map((album) => {
-                    if (!album) return null;
-                    return (
-                      <List.Item
-                        key={album.id}
-                        title={album.name || "Unknown Album"}
-                        subtitle={album.artists?.map((a) => a.name).join(", ") || "Unknown Artist"}
-                        icon={{ source: album.images?.[0]?.url || Icon.Cd }}
-                        accessories={[
-                          { text: album.release_date || "" },
-                          { text: `${album.total_tracks} tracks`, tooltip: "Total Tracks" },
-                        ]}
-                        actions={
-                          <ActionPanel>
-                            <Action
-                              title="Play Album"
-                              icon={Icon.Play}
-                              onAction={async () => {
-                                try {
-                                  await play({ contextUri: album.uri });
-                                  await showHUD("▶️ Playing Album");
-                                } catch (error) {
-                                  await showHUD("❌ Could not play album");
-                                }
-                                return false; // Prevents Raycast from closing
-                              }}
+                {searchData.albums.items.slice(0, showAll ? 3 : undefined).map((album) => {
+                  if (!album) return null;
+                  const typedAlbum = album as SimplifiedAlbumObject;
+                  return (
+                    <List.Item
+                      key={typedAlbum.id}
+                      title={typedAlbum.name || "Unknown Album"}
+                      subtitle={typedAlbum.artists?.map((a) => a.name).join(", ") || "Unknown Artist"}
+                      icon={{ source: typedAlbum.images?.[0]?.url || Icon.Cd }}
+                      accessories={[
+                        { text: typedAlbum.release_date || "" },
+                        { text: `${typedAlbum.total_tracks} tracks`, tooltip: "Total Tracks" },
+                      ]}
+                      actions={
+                        <ActionPanel>
+                          <Action
+                            title="Play Album"
+                            icon={Icon.Play}
+                            onAction={async () => {
+                              try {
+                                await play({ contextUri: typedAlbum.uri });
+                                await showHUD("▶️ Playing Album");
+                              } catch {
+                                await showHUD("❌ Could not play album");
+                              }
+                              return false; // Prevents Raycast from closing
+                            }}
+                          />
+                          {typedAlbum.external_urls?.spotify && (
+                            <Action.OpenInBrowser title="Open in Spotify" url={typedAlbum.external_urls.spotify} />
+                          )}
+                          {typedAlbum.external_urls?.spotify && (
+                            <Action.CopyToClipboard
+                              title="Copy Spotify URL"
+                              content={typedAlbum.external_urls.spotify}
                             />
-                            {album.external_urls?.spotify && (
-                              <Action.OpenInBrowser title="Open in Spotify" url={album.external_urls.spotify} />
-                            )}
-                            {album.external_urls?.spotify && (
-                              <Action.CopyToClipboard title="Copy Spotify URL" content={album.external_urls.spotify} />
-                            )}
-                          </ActionPanel>
-                        }
-                      />
-                    );
-                  })}
+                          )}
+                        </ActionPanel>
+                      }
+                    />
+                  );
+                })}
               </List.Section>
             )}
           {/* Playlists Section */}
@@ -160,47 +161,45 @@ function SearchCommand() {
                 title="Playlists"
                 subtitle={showAll ? `${Math.min(3, searchData.playlists.items.length)}` : undefined}
               >
-                {searchData.playlists.items
-                  .slice(0, showAll ? 3 : undefined)
-                  .filter(Boolean)
-                  .map((playlist) => {
-                    if (!playlist) return null;
-                    return (
-                      <List.Item
-                        key={playlist.id}
-                        title={playlist.name || "Unknown Playlist"}
-                        subtitle={`by ${playlist.owner?.display_name || "Unknown"}`}
-                        icon={{ source: playlist.images?.[0]?.url || Icon.List }}
-                        accessories={[{ text: `${playlist.tracks?.total || 0} tracks`, tooltip: "Total Tracks" }]}
-                        actions={
-                          <ActionPanel>
-                            <Action
-                              title="Play Playlist"
-                              icon={Icon.Play}
-                              onAction={async () => {
-                                try {
-                                  await play({ contextUri: playlist.uri });
-                                  await showHUD("▶️ Playing Playlist");
-                                } catch (error) {
-                                  await showHUD("❌ Could not play playlist");
-                                }
-                                return false; // Prevents Raycast from closing
-                              }}
+                {searchData.playlists.items.slice(0, showAll ? 3 : undefined).map((playlist) => {
+                  if (!playlist) return null;
+                  const typedPlaylist = playlist as SimplifiedPlaylistObject;
+                  return (
+                    <List.Item
+                      key={typedPlaylist.id}
+                      title={typedPlaylist.name || "Unknown Playlist"}
+                      subtitle={`by ${typedPlaylist.owner?.display_name || "Unknown"}`}
+                      icon={{ source: typedPlaylist.images?.[0]?.url || Icon.List }}
+                      accessories={[{ text: `${typedPlaylist.tracks?.total || 0} tracks`, tooltip: "Total Tracks" }]}
+                      actions={
+                        <ActionPanel>
+                          <Action
+                            title="Play Playlist"
+                            icon={Icon.Play}
+                            onAction={async () => {
+                              try {
+                                await play({ contextUri: typedPlaylist.uri });
+                                await showHUD("▶️ Playing Playlist");
+                              } catch {
+                                await showHUD("❌ Could not play playlist");
+                              }
+                              return false; // Prevents Raycast from closing
+                            }}
+                          />
+                          {typedPlaylist.external_urls?.spotify && (
+                            <Action.OpenInBrowser title="Open in Spotify" url={typedPlaylist.external_urls.spotify} />
+                          )}
+                          {typedPlaylist.external_urls?.spotify && (
+                            <Action.CopyToClipboard
+                              title="Copy Spotify URL"
+                              content={typedPlaylist.external_urls.spotify}
                             />
-                            {playlist.external_urls?.spotify && (
-                              <Action.OpenInBrowser title="Open in Spotify" url={playlist.external_urls.spotify} />
-                            )}
-                            {playlist.external_urls?.spotify && (
-                              <Action.CopyToClipboard
-                                title="Copy Spotify URL"
-                                content={playlist.external_urls.spotify}
-                              />
-                            )}
-                          </ActionPanel>
-                        }
-                      />
-                    );
-                  })}
+                          )}
+                        </ActionPanel>
+                      }
+                    />
+                  );
+                })}
               </List.Section>
             )}
           {searchText &&

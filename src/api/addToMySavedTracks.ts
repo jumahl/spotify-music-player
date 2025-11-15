@@ -5,7 +5,7 @@ export async function addToMySavedTracks({ trackIds }: { trackIds: string[] }) {
   const spotifyClient = getSpotifyClient();
 
   try {
-    await spotifyClient.putMeTracks(trackIds.join(","), { ids: trackIds });
+    await spotifyClient.putMeTracks({ ids: trackIds });
   } catch (err) {
     const error = getErrorMessage(err);
     console.log("addToMySavedTracks.ts Error:", error);

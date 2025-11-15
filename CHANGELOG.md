@@ -10,3 +10,9 @@
 - Preferences for album art and volume step
 - Improved error handling
 - OAuth 2.0 authentication
+
+## [2025.11.15]
+
+- Updated `src/helpers/spotify.api.ts` to version 2025.5.18 using the sonallux specification.
+- Adapted all code to the new API response structure.
+- Fixed reserved shortcut error in Quick Actions (`Enter`).

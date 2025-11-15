@@ -16,7 +16,7 @@ function NowPlayingCommand() {
   const { playbackStateData, playbackStateIsLoading, playbackStateRevalidate } = usePlaybackState();
 
   const isPlaying = playbackStateData?.is_playing;
-  const isTrack = currentlyPlayingData?.currently_playing_type !== "episode";
+  const isTrack = currentlyPlayingData?.data?.currently_playing_type !== "episode";
   const shuffleState = playbackStateData?.shuffle_state ?? false;
   const repeatState = playbackStateData?.repeat_state ?? "off";
   const trackUri = isTrack ? (currentlyPlayingData?.item as TrackObject)?.uri : undefined;
