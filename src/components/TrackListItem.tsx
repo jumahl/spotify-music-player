@@ -43,7 +43,10 @@ export default function TrackListItem({ track, album }: TrackListItemProps) {
             <Action.OpenInBrowser
               title="Open in Spotify"
               url={track.external_urls.spotify}
-              shortcut={{ modifiers: ["ctrl"], key: "o" }}
+              shortcut={{
+                modifiers: ["shift"],
+                key: "o",
+              }}
             />
           )}
         </ActionPanel>

@@ -97,7 +97,6 @@ function NowPlayingCommand() {
             <Action
               icon={Icon.Pause}
               title="Pause"
-              shortcut={{ modifiers: [], key: "return" }}
               onAction={async () => {
                 await pause();
                 await playbackStateRevalidate();
@@ -108,7 +107,6 @@ function NowPlayingCommand() {
             <Action
               icon={Icon.Play}
               title="Play"
-              shortcut={{ modifiers: [], key: "return" }}
               onAction={async () => {
                 await play();
                 await playbackStateRevalidate();
@@ -119,7 +117,10 @@ function NowPlayingCommand() {
           <Action
             icon={Icon.Forward}
             title="Next Track"
-            shortcut={{ modifiers: ["ctrl"], key: "arrowRight" }}
+            shortcut={{
+              modifiers: ["shift"],
+              key: "arrowRight",
+            }}
             onAction={async () => {
               await skipToNext();
               await currentlyPlayingRevalidate();
@@ -129,7 +130,10 @@ function NowPlayingCommand() {
           <Action
             icon={Icon.Rewind}
             title="Previous Track"
-            shortcut={{ modifiers: ["ctrl"], key: "arrowLeft" }}
+            shortcut={{
+              modifiers: ["shift"],
+              key: "arrowLeft",
+            }}
             onAction={async () => {
               await skipToPrevious();
               await currentlyPlayingRevalidate();
@@ -137,18 +141,12 @@ function NowPlayingCommand() {
             }}
           />
           <Action
-            icon={Icon.Repeat}
-            title="Refresh"
-            shortcut={{ modifiers: ["ctrl"], key: "r" }}
-            onAction={async () => {
-              await currentlyPlayingRevalidate();
-              await playbackStateRevalidate();
-              return false; // Prevents Raycast from closing
-            }}
-          />
-          <Action
             icon={Icon.Shuffle}
             title={shuffleState ? "Turn Shuffle off" : "Turn Shuffle on"}
+            shortcut={{
+              modifiers: ["shift"],
+              key: "s",
+            }}
             onAction={async () => {
               await toggleShuffle(!shuffleState);
               await playbackStateRevalidate();
@@ -160,6 +158,10 @@ function NowPlayingCommand() {
             title={
               repeatState === "off" ? "Repeat Context" : repeatState === "context" ? "Repeat Track" : "Turn Repeat Off"
             }
+            shortcut={{
+              modifiers: ["shift"],
+              key: "r",
+            }}
             onAction={async () => {
               const newState = repeatState === "off" ? "context" : repeatState === "context" ? "track" : "off";
               await toggleRepeat(newState);
@@ -171,6 +173,10 @@ function NowPlayingCommand() {
             <Action
               icon={Icon.Music}
               title="Start Radio"
+              shortcut={{
+                modifiers: ["opt", "shift"],
+                key: "m",
+              }}
               onAction={async () => {
                 await startRadio(trackUri);
                 await currentlyPlayingRevalidate();
@@ -182,9 +188,25 @@ function NowPlayingCommand() {
             <Action.OpenInBrowser
               title="Open in Spotify"
               url={external_urls.spotify}
-              shortcut={{ modifiers: ["ctrl"], key: "o" }}
+              shortcut={{
+                modifiers: ["shift"],
+                key: "o",
+              }}
             />
           )}
+          <Action
+            icon={Icon.Repeat}
+            title="Refresh"
+            shortcut={{
+              modifiers: ["opt", "shift"],
+              key: "r",
+            }}
+            onAction={async () => {
+              await currentlyPlayingRevalidate();
+              await playbackStateRevalidate();
+              return false; // Prevents Raycast from closing
+            }}
+          />
         </ActionPanel>
       }
     />

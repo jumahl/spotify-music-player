@@ -71,12 +71,23 @@ function SearchCommand() {
                       actions={
                         <ActionPanel>
                           {typedArtist.external_urls?.spotify && (
-                            <Action.OpenInBrowser title="Open in Spotify" url={typedArtist.external_urls.spotify} />
+                            <Action.OpenInBrowser
+                              title="Open in Spotify"
+                              url={typedArtist.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "o",
+                              }}
+                            />
                           )}
                           {typedArtist.external_urls?.spotify && (
                             <Action.CopyToClipboard
                               title="Copy Spotify URL"
                               content={typedArtist.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "c",
+                              }}
                             />
                           )}
                         </ActionPanel>
@@ -138,12 +149,23 @@ function SearchCommand() {
                             }}
                           />
                           {typedAlbum.external_urls?.spotify && (
-                            <Action.OpenInBrowser title="Open in Spotify" url={typedAlbum.external_urls.spotify} />
+                            <Action.OpenInBrowser
+                              title="Open in Spotify"
+                              url={typedAlbum.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "o",
+                              }}
+                            />
                           )}
                           {typedAlbum.external_urls?.spotify && (
                             <Action.CopyToClipboard
                               title="Copy Spotify URL"
                               content={typedAlbum.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "c",
+                              }}
                             />
                           )}
                         </ActionPanel>
@@ -187,12 +209,23 @@ function SearchCommand() {
                             }}
                           />
                           {typedPlaylist.external_urls?.spotify && (
-                            <Action.OpenInBrowser title="Open in Spotify" url={typedPlaylist.external_urls.spotify} />
+                            <Action.OpenInBrowser
+                              title="Open in Spotify"
+                              url={typedPlaylist.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "o",
+                              }}
+                            />
                           )}
                           {typedPlaylist.external_urls?.spotify && (
                             <Action.CopyToClipboard
                               title="Copy Spotify URL"
                               content={typedPlaylist.external_urls.spotify}
+                              shortcut={{
+                                modifiers: ["shift"],
+                                key: "c",
+                              }}
                             />
                           )}
                         </ActionPanel>

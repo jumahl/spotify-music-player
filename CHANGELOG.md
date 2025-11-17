@@ -16,3 +16,9 @@
 - Updated `src/helpers/spotify.api.ts` to version 2025.5.18 using the sonallux specification.
 - Adapted all code to the new API response structure.
 - Fixed reserved shortcut error in Quick Actions (`Enter`).
+
+## [2025.11.16]
+
+- Fixed shortcuts that were not working on Windows; they now appear correctly in the interface.
+- All simple actions now use the `Shift` key as the main modifier.
+- Action subtitles in Quick Actions are now static to prevent React state update errors.
